@@ -3,8 +3,8 @@
 Based on Android Studio, implement the function to collect sensors data in android device. We develp the app in Wear OS round System.
 
 Important Files:
-- [`.txt`]: the sensors data that collect in the device.
-- ['Use'](#Use): introduction to use this app.
+- [.txt]: the sensors data that collect in the device.
+- [Use](#Use): introduction to use this app.
 
 ## Use
 - The main interface:
@@ -13,7 +13,7 @@ Important Files:
 - Select the sensor that need to collect:
 <img src="image/app2.png" width="100">
 
-- Click [`start`], start to collect. Click [`stop`] to stop:
+- Click [start], start to collect. Click [stop] to stop:
 <img src="image/app3.png" width="100">
 
 - If the sensor doesn't work, then:
