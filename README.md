@@ -4,9 +4,9 @@ Based on Android Studio, implement the function to collect sensors data in andro
 
 Important Files:
 - `*.txt`: the sensors data that collect in the device.
-- [Use](#Use): introduction to use this app.
+- [Introduction](#Introduction) : introduction to use this app.
 
-## Use
+## Introduction
 - The main interface:
 <img src="image/app1.png" width="200">
 
