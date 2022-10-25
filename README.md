@@ -6,6 +6,9 @@ Important Files:
 - `*.txt`: the sensors data that collect in the device.
 - [Introduction](#Introduction) : introduction to use this app.
 
+Permissions:
+open the permission of BODY_SENSORS, can't accept this permission directly in manifest.
+
 ## Introduction
 
 - The main interface:
