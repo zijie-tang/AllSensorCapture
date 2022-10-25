@@ -2,18 +2,21 @@ package com.example.sensorcapture;
 
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.core.app.ActivityCompat;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,12 +32,13 @@ public class MainActivity extends Activity implements SensorEventListener, View.
     private CheckBox checkBox[]= new CheckBox[30];
     static public List<String> LS;
     static public List<Sensor> allSensors;
-    private int SENSOR_RATE_NORMAL=20000;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCompat.requestPermissions(MainActivity.this,new String[]{"android.permission.CONTROL_DEVICE_LIGHTS"},0);
 
         Button start = findViewById(R.id.start);
         start.setOnClickListener(this);
@@ -44,11 +48,15 @@ public class MainActivity extends Activity implements SensorEventListener, View.
 
         SensorNumAll=findViewById(R.id.SensorTypeAll);
         tableLayout=findViewById(R.id.tableLayout);
-
+        
         SensorInfo();
+
+        vibrator=(Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
 
         LS = new ArrayList<String>();
     }
+
+
 
     /*
     Get all sensors in this device and add the checkbox to provide the function that user can choose which sensor to collect.
@@ -56,7 +64,6 @@ public class MainActivity extends Activity implements SensorEventListener, View.
     public void SensorInfo(){
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         allSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        Sensor sensor1 = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         SensorNumAll.setText("Total have "+allSensors.size()+" sensors, choose sensors you need");
         for(int i=0;i<allSensors.size();i++){
             checkBox[i]=new CheckBox(this);
@@ -84,7 +91,6 @@ public class MainActivity extends Activity implements SensorEventListener, View.
     protected void onStop() {
         super.onStop();
         sensorManager.unregisterListener(this);
-
     }
 
     /*
@@ -116,12 +122,16 @@ public class MainActivity extends Activity implements SensorEventListener, View.
                 for(int i=0;i<allSensors.size();i++){
                     if(checkBox[i].isChecked()==true){
                         sensorManager.unregisterListener(this, allSensors.get(i));
-                        sensorManager.registerListener(this, allSensors.get(i), SENSOR_RATE_NORMAL);
+                        sensorManager.registerListener(this, allSensors.get(i), SensorManager.SENSOR_DELAY_FASTEST);
                     }
                 }
+                vibrator.vibrate(30);
+                Toast.makeText(this, "start to capture", Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.stop:
                 sensorManager.unregisterListener(this);
+                vibrator.vibrate(30);
                 if(LS.size()!=0) {
                     writeLS(LS);
                     Toast.makeText(this, "capture successfully! Total " + LS.size() + " records", Toast.LENGTH_SHORT).show();
@@ -144,7 +154,7 @@ public class MainActivity extends Activity implements SensorEventListener, View.
         //if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             String s;
             long timeCurrentTimeMillis = System.currentTimeMillis();
-            s = timeCurrentTimeMillis + " "+sensorEvent.sensor.getName();
+            s = timeCurrentTimeMillis + " "+sensorEvent.sensor.getName()+" "+sensorType;
             for(int i=0;i<values.length;i++) {
                 s+=" "+Float.toString(values[i]);
             }
